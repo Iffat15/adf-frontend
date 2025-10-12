@@ -1,0 +1,38 @@
+.app-container {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.left-panel {
+  flex: 1;
+  background-color: #f0f0f0;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-right: 10px;
+}
+
+/* .middle-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  background-color: #e8f5e9;
+  padding: 10px;
+  box-sizing: border-box;
+} */
+ .middle-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-right: 10px;
+}
+
+
+.right-panel {
+  flex: 1;
+  /* background-color: #e3f2fd; */
+  padding: 10px;
+  box-sizing: border-box;
+  margin-left: 10px
+}
