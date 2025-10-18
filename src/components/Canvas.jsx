@@ -1,195 +1,173 @@
-// export default function Canvas({ canvasNodes }) {
-//   return (
-//     <div style={{ flex: 1, padding: '1rem', display: 'flex', alignItems: 'center', gap: '20px' }}>
-//       {canvasNodes.map((label, index) => (
-//         <div
-//           key={index}
-//           style={{
-//             padding: '12px 16px',
-//             backgroundColor: '#cce5ff',
-//             borderRadius: '6px',
-//             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-//           }}
-//         >
-//           {label}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-
-// // import React, { useCallback } from 'react';
-// // import ReactFlow, {
-// //   ReactFlowProvider,
-// //   useNodesState,
-// //   useEdgesState,
-// //   addEdge,
-// // } from 'react-flow-renderer';
-
-// // const initialNodes = [];
-// // const initialEdges = [];
-
-// // export default function Canvas() {
-// //   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-// //   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
-// //   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
-
-// //   const onDrop = useCallback((event) => {
-// //     event.preventDefault();
-// //     const nodeLabel = event.dataTransfer.getData('application/reactflow');
-// //     const position = { x: event.clientX - 250, y: event.clientY - 100 };
-// //     const newNode = {
-// //       id: `${+new Date()}`,
-// //       type: 'default',
-// //       position,
-// //       data: { label: nodeLabel },
-// //     };
-// //     setNodes((nds) => nds.concat(newNode));
-// //   }, [setNodes]);
-
-// //   const onDragOver = useCallback((event) => {
-// //     event.preventDefault();
-// //     event.dataTransfer.dropEffect = 'move';
-// //   }, []);
-
-// //   return (
-// //     <div className="canvas">
-// //       <ReactFlowProvider>
-// //         <ReactFlow
-// //           nodes={nodes}
-// //           edges={edges}
-// //           onNodesChange={onNodesChange}
-// //           onEdgesChange={onEdgesChange}
-// //           onConnect={onConnect}
-// //           onDrop={onDrop}
-// //           onDragOver={onDragOver}
-// //           fitView
-// //         />
-// //       </ReactFlowProvider>
-// //     </div>
-// //   );
-// // }
-// import React from 'react';
-// import ReactFlow, { ReactFlowProvider } from 'reactflow';
-
-// const nodes = [
-//   {
-//     id: '1',
-//     data: { label: 'Node 1' },
-//     position: { x: 100, y: 100 },
-//   },
-//   {
-//     id: '2',
-//     data: { label: 'Node 2' },
-//     position: { x: 300, y: 100 },
-//   },
-// ];
-
-// const edges = [
-//   {
-//     id: 'e1-2',
-//     source: '1',
-//     target: '2',
-//     type: 'default',
-//   },
-// ];
-
-// export default function Canvas() {
-//   return (
-//     <div className="canvas" style={{ height: '100%', border: '2px dashed #ccc' }}>
-//       <ReactFlowProvider>
-//         <ReactFlow nodes={nodes} edges={edges} fitView />
-//       </ReactFlowProvider>
-//       Hiii
-//     </div>
-//   );
-// }
-// Canvas.js
-// export default function Canvas({ canvasNodes }) {
-//   return (
-//     <div style={{ flex: 1, padding: '1rem', display: 'flex', alignItems: 'center', gap: '20px' }}>
-//       {canvasNodes.map((label, index) => (
-//         <div
-//           key={index}
-//           style={{
-//             padding: '12px 16px',
-//             backgroundColor: '#cce5ff',
-//             borderRadius: '6px',
-//             boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-//           }}
-//         >
-//           {label}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
 
 // import React from 'react';
 
-// export default function Canvas({ selectedNode }) {
+// export default function Canvas({ canvasNodes }) {
 //   return (
-//     <div  style={{ height: '70%', width: '100%', background: '#fff', padding: '10px', overflowY: 'auto' }}>
-//       <h3>Canvas</h3>
-//       {selectedNode ? (
-//         <div
-//           style={{
-//             padding: '12px',
-//             background: '#eee',
-//             border: '1px solid #ccc',
-//             borderRadius: '4px',
-//           }}
-//         >
-//           {selectedNode}
-//         </div>
+//     <div
+//       style={{
+//         height: '70%',
+//         width: '100%',
+//         background: '#fff',
+//         padding: '10px',
+//         border: '2px dotted #aaa',       // dotted border
+//         borderRadius: '12px',            // curved corners
+//         boxSizing: 'border-box',
+//         position: 'relative',
+//         display: 'flex',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         fontStyle: 'italic',
+//         color: '#666',
+//       }}
+//     >
+//       {canvasNodes.length === 0 ? (
+//         <span>Drag and drop your nodes here</span>
 //       ) : (
-//         <p>No node selected</p>
+//         <div style={{ width: '100%' }}>
+//           {canvasNodes.map((node, index) => (
+//             <div
+//               key={index}
+//               style={{
+//                 padding: '8px',
+//                 margin: '4px',
+//                 background: '#eee',
+//                 border: '1px solid #ccc',
+//                 borderRadius: '4px',
+//               }}
+//             >
+//               {node}
+//             </div>
+//           ))}
+//         </div>
 //       )}
 //     </div>
 //   );
 // }
-import React from 'react';
+import { useRef } from 'react';
+export default function Canvas({ canvasNodes, onDropNode, setCanvasNodes }) {
+  const handleDragOver = (e) => {
+    e.preventDefault(); // Required to allow drop
+  };
 
-export default function Canvas({ canvasNodes }) {
+  // const handleDrop = (e) => {
+  //   const label = e.dataTransfer.getData("nodeLabel");
+  //   if (label) {
+  //     onDropNode(label);
+  //   }
+  // };
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const label = e.dataTransfer.getData("nodeLabel");
+    const canvasRect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - canvasRect.left;
+    const y = e.clientY - canvasRect.top;
+
+    if (label) {
+      onDropNode(label, { x, y });
+    }
+  };
+   const draggingNodeIndex = useRef(null);
+
+  const handleMouseDown = (e, index) => {
+    draggingNodeIndex.current = index;
+    document.addEventListener("mousemove", handleMouseMove);
+    document.addEventListener("mouseup", handleMouseUp);
+  };
+
+  const handleMouseMove = (e) => {
+    if (draggingNodeIndex.current === null) return;
+
+    const canvasRect = document.querySelector(".canvas").getBoundingClientRect();
+    const x = e.clientX - canvasRect.left;
+    const y = e.clientY - canvasRect.top;
+
+    setCanvasNodes((prev) =>
+      prev.map((node, i) =>
+        i === draggingNodeIndex.current
+          ? { ...node, position: { x, y } }
+          : node
+      )
+    );
+  };
+
+  const handleMouseUp = () => {
+    draggingNodeIndex.current = null;
+    document.removeEventListener("mousemove", handleMouseMove);
+    document.removeEventListener("mouseup", handleMouseUp);
+  };
+
   return (
+    // <div
+    //   className="canvas"
+    //   onDragOver={handleDragOver}
+    //   onDrop={handleDrop}
+    //   style={{
+    //     border: "2px dashed #ccc",
+    //     minHeight: "400px",
+    //     padding: "20px",
+    //     backgroundColor: "#f9f9f9",
+    //   }}
+    // >
+    //   <h3>Pipeline Canvas</h3>
+    //   {canvasNodes.length === 0 ? (
+    //     <p>Drag nodes here to build your pipeline</p>
+    //   ) : (
+    //     <ul>
+    //       {canvasNodes.map((label, index) => (
+    //         <li key={index}>{label}</li>
+    //       ))}
+    //     </ul>
+    //   )}
+    // </div>
     <div
+      className="canvas"
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={handleDrop}
       style={{
-        height: '70%',
-        width: '100%',
-        background: '#fff',
-        padding: '10px',
-        border: '2px dotted #aaa',       // dotted border
-        borderRadius: '12px',            // curved corners
-        boxSizing: 'border-box',
-        position: 'relative',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontStyle: 'italic',
-        color: '#666',
+        position: "relative",
+        border: "2px dashed #ccc",
+        minHeight: "400px",
+        padding: "20px",
+        backgroundColor: "#f9f9f9",
       }}
     >
-      {canvasNodes.length === 0 ? (
-        <span>Drag and drop your nodes here</span>
-      ) : (
-        <div style={{ width: '100%' }}>
-          {canvasNodes.map((node, index) => (
-            <div
-              key={index}
-              style={{
-                padding: '8px',
-                margin: '4px',
-                background: '#eee',
-                border: '1px solid #ccc',
-                borderRadius: '4px',
-              }}
-            >
-              {node}
-            </div>
-          ))}
+      {/* {canvasNodes.map((node, index) => (
+        <div
+          key={index}
+          style={{
+            position: "absolute",
+            left: node.position.x,
+            top: node.position.y,
+            padding: "8px",
+            background: "#cce5ff",
+            borderRadius: "4px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+          }}
+        >
+          {node.label}
         </div>
-      )}
+      ))} */}
+      {canvasNodes.map((node, index) => (
+        <div
+          key={index}
+          onMouseDown={(e) => handleMouseDown(e, index)}
+          style={{
+            position: "absolute",
+            left: node.position.x,
+            top: node.position.y,
+            padding: "8px",
+            background: "#cce5ff",
+            borderRadius: "4px",
+            boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+            cursor: "move",
+            userSelect: "none",
+          }}
+        >
+          {node.label}
+        </div>
+      ))}
+
     </div>
+
   );
 }

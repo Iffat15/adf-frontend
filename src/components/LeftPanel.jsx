@@ -24,21 +24,50 @@
 //     </div>
 //   );
 // }
-export default function LeftPanel({nodes,onNodeClick}) {
-//   const onDragStart = (event, nodeLabel) => {
-//     event.dataTransfer.setData('application/reactflow', nodeLabel);
-//     event.dataTransfer.effectAllowed = 'move';
-//   };
+// export default function LeftPanel({nodes,onNodeClick}) {
+// //   const onDragStart = (event, nodeLabel) => {
+// //     event.dataTransfer.setData('application/reactflow', nodeLabel);
+// //     event.dataTransfer.effectAllowed = 'move';
+// //   };
+
+//   return (
+//     <div className="left-panel">
+//       <h3>Node Library</h3>
+//       {nodes.map((label,index) => (
+//         <div
+//           key={label}
+//         //   onDragStart={(event) => onDragStart(event, label)}
+//         //   draggable
+//           onClick={()=> onNodeClick(label)}
+//           style={{
+//             padding: '8px',
+//             margin: '4px',
+//             background: '#ddd',
+//             cursor: 'grab',
+//             borderRadius: '4px',
+//           }}
+//         >
+//           {label}
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
+export default function LeftPanel({ nodes, onNodeClick }) {
+  const onDragStart = (event, nodeLabel) => {
+    event.dataTransfer.setData('nodeLabel', nodeLabel);
+    event.dataTransfer.effectAllowed = 'move';
+  };
 
   return (
     <div className="left-panel">
       <h3>Node Library</h3>
-      {nodes.map((label,index) => (
+      {nodes.map((label, index) => (
         <div
           key={label}
-        //   onDragStart={(event) => onDragStart(event, label)}
-        //   draggable
-          onClick={()=> onNodeClick(label)}
+          draggable
+          onDragStart={(event) => onDragStart(event, label)}
+          onClick={() => onNodeClick(label)}
           style={{
             padding: '8px',
             margin: '4px',

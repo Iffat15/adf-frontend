@@ -1,64 +1,16 @@
-// // import { useState } from 'react'
-// // import reactLogo from './assets/react.svg'
-// // import viteLogo from '/vite.svg'
-// // import './App.css'
-
-// // function App() {
-// //   const [count, setCount] = useState(0)
-
-// //   return (
-// //     <>
-// //       <div>
-// //         <a href="https://vite.dev" target="_blank">
-// //           <img src={viteLogo} className="logo" alt="Vite logo" />
-// //         </a>
-// //         <a href="https://react.dev" target="_blank">
-// //           <img src={reactLogo} className="logo react" alt="React logo" />
-// //         </a>
-// //       </div>
-// //       <h1>Vite + React</h1>
-// //       <div className="card">
-// //         <button onClick={() => setCount((count) => count + 1)}>
-// //           count is {count}
-// //         </button>
-// //         <p>
-// //           Edit <code>src/App.jsx</code> and save to test HMR
-// //         </p>
-// //       </div>
-// //       <p className="read-the-docs">
-// //         Click on the Vite and React logos to learn more
-// //       </p>
-// //     </>
-// //   )
-// // }
-
-// // export default App
-// import React, { useState } from 'react';
-// import LeftPanel from './components/LeftPanel.jsx';
-// import MiddlePanel from './components/MiddlePanel.jsx';
-// import RightPanel from './components/RightPanel.jsx';
-
-// export default function App() {
-//   const [selectedItem, setSelectedItem] = useState(null);
-
-//   return (
-//     <div style={{ display: 'flex', height: '100vh' }}>
-//       <LeftPanel onSelect={setSelectedItem} />
-//       <MiddlePanel selected={selectedItem} />
-//       <RightPanel />
-//     </div>
-//   );
-// }
 import './App.css';
 import { useState, useEffect } from 'react';
-import LeftPanel  from './components/LeftPanel';
+import LeftPanel from './components/LeftPanel';
 import MiddlePanel from './components/MiddlePanel';
 import Canvas from './components/Canvas';
 import RightPanel from './components/RightPanel';
+import LogPanel from './components/LogPanel';
 function App() {
-  
+
   const [nodes, setNodes] = useState([]);
-  const [canvasNodes,setCanvasNodes] = useState([])
+  const [canvasNodes, setCanvasNodes] = useState([])
+  const [results, setResults] = useState([]);
+
   //  Fetch uploaded scripts when page loads
   useEffect(() => {
     const fetchScripts = async () => {
@@ -73,33 +25,44 @@ function App() {
 
     fetchScripts();
   }, []);
-  const handleNodeClick = (label) =>{
-    setCanvasNodes((prev)=>[...prev,label])
-  }
   // const handleNodeClick = (label) => {
-  //   const newNode = { label, next: null };
+  //   setCanvasNodes((prev) => [...prev, label])
+  // }
+  const handleNodeClick = (label) => {
+    setCanvasNodes((prev) => [
+      ...prev,
+      { label, position: { x: 50, y: 50 } } // default position
+    ]);
+  };
 
-  //   setCanvasNodes((prev) => {
-  //     // Link the last node to the new one
-  //     if (prev.length > 0) {
-  //       prev[prev.length - 1].next = newNode;
-  //     }
-  //     return [...prev, newNode];
-  //   });
-  // };
   //  This function will be passed to MiddlePanel
   const handleNewNode = (label) => {
     setNodes((prevNodes) => [...prevNodes, label]);
   };
+
+  const handleDropNode = (label, position) => {
+    setCanvasNodes((prev) => [
+      ...prev,
+      { label, position }
+    ]);
+  };
+
   return (
     <div className="app-container">
       {/* <div className='main-content'> */}
-        <LeftPanel nodes = {nodes} onNodeClick={handleNodeClick}/>
-        <div className='middle-section'>
-          <MiddlePanel onNewNode={handleNewNode} />
-          <Canvas canvasNodes={canvasNodes}/>
-        </div>
-        <RightPanel queue={canvasNodes}/>
+      <LeftPanel nodes={nodes} onNodeClick={handleNodeClick} />
+      <div className='middle-section'>
+        <MiddlePanel onNewNode={handleNewNode} />
+        {/* <Canvas canvasNodes={canvasNodes} onDropNode={handleDropNode} /> */}
+        <Canvas
+          canvasNodes={canvasNodes}
+          onDropNode={handleDropNode}
+          setCanvasNodes={setCanvasNodes}
+        />
+
+      </div>
+      <RightPanel queue={canvasNodes} setResults={setResults} />
+      <LogPanel results={results} />
       {/* </div> */}
     </div>
   );

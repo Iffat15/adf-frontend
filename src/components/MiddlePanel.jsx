@@ -1,82 +1,28 @@
-// import React from 'react';
-// // import Canvas from './Canvas';
-// export default function MiddlePanel({ selected }) {
-//   return (
-//     <div style={{ width: '40%', padding: '10px', background: '#e8f5e9' }}>
-//       <h3>Middle Panel</h3>
-//       <p>{selected ? `You selected: ${selected}` : 'No selection yet.'}</p>
-//       {/* <Canvas/> */}
-//     </div>
-//   );
-// }
-// // import Canvas from './Canvas';
 
-// export default function MiddlePanel() {
-//   return (
-//     <div className="middle-panel">
-//       <div>
-//         <h3>Upload Your Script</h3>
-//         <input type="file" />
-//       </div>
-//       {/* <Canvas /> */}
-//     </div>
-//   );
-// }
-// import Canvas from './Canvas.js';
-
-// export default function MiddlePanel() {
-//   return (
-//     <div className="middle-panel">
-//       <div className="upload-panel">
-//         <h3>Upload Your Script</h3>
-//         <input type="file" />
-//       </div>
-//       <Canvas />
-//     </div>
-//   );
-// }
-// import React, { useState } from 'react';
-// // import Canvas from './Canvas';
-// export default function MiddlePanel({onNewNode}) {
-//   const [file, setFile] = useState(null);
-
-//   const handleUpload = async () => {
-//     if (!file) return;
-
-//     const formData = new FormData();
-//     formData.append('script', file);
-
-//     try {
-//       const res = await fetch('http://localhost:8000/upload-script', {
-//         method: 'POST',
-//         body: formData,
-//       });
-//       const data = await res.json();
-//        // ✅ This is the key line: pass the filename to parent
-//       onNewNode(data.nodeLabel);
-//       console.log('Backend response:', data);
-//     } catch (err) {
-//       console.error('Upload failed:', err);
-//     }
-//   };
-
-//   return (
-//     <div className='middle-panel'>
-//         <div style={ {height: '30%',  background: '#e8f5e9', padding: '10px'}}>
-//             <h3>Upload Your Script</h3>
-//             <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-//             <button onClick={handleUpload}>Upload</button>
-//         </div>
-//         {/* <Canvas/> */}
-//     </div>
-//   );
-// }
 import React, { useState } from 'react';
 import { FaUpload } from 'react-icons/fa'; // Make sure react-icons is installed
 
 export default function MiddlePanel({ onNewNode }) {
   const [file, setFile] = useState(null);
 
+  // const handleUpload = async () => {
+  //   if (!file) return;
+
+  //   const formData = new FormData();
+  //   formData.append('script', file);
+
+  //   try {
+  //     const res = await fetch('http://localhost:8000/upload-script', {
+  //       method: 'POST',
+  //       body: formData,
+  //     });
+  //     const data = await res.json();
+  //     onNewNode(data.nodeLabel);
+  //     console.log('Backend response:', data);
+  //   } catch (err) {
+  //     console.error('Upload failed:', err);
+  //   }
+  // };
   const handleUpload = async () => {
     if (!file) return;
 
@@ -88,11 +34,27 @@ export default function MiddlePanel({ onNewNode }) {
         method: 'POST',
         body: formData,
       });
+
       const data = await res.json();
+
+      if (!res.ok) {
+        // ❌ Backend rejected the file
+        alert(data.detail || "Upload failed");
+        return;
+      }
+
+      if (!data.nodeLabel || typeof data.nodeLabel !== "string") {
+        // ❌ Unexpected or empty response
+        alert("Invalid script uploaded");
+        return;
+      }
+
+      // ✅ Only add valid scripts to the canvas
       onNewNode(data.nodeLabel);
       console.log('Backend response:', data);
     } catch (err) {
       console.error('Upload failed:', err);
+      alert("Upload failed");
     }
   };
 
