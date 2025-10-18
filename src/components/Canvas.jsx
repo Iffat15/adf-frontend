@@ -44,7 +44,11 @@
 //   );
 // }
 import { useRef } from 'react';
-export default function Canvas({ canvasNodes, onDropNode, setCanvasNodes }) {
+export default function Canvas({ canvasNodes,
+  onDropNode,
+  setCanvasNodes,
+  onNodeSelect,
+connections }) {
   const handleDragOver = (e) => {
     e.preventDefault(); // Required to allow drop
   };
@@ -119,55 +123,140 @@ export default function Canvas({ canvasNodes, onDropNode, setCanvasNodes }) {
     //     </ul>
     //   )}
     // </div>
+//     <div
+      
+//       className="canvas"
+//       onDragOver={(e) => e.preventDefault()}
+//       onDrop={handleDrop}
+//       style={{
+//         position: "relative",
+//         border: "2px dashed #ccc",
+//         minHeight: "400px",
+//         padding: "20px",
+//         backgroundColor: "#f9f9f9",
+//       }}
+//     >
+//       {/* {canvasNodes.map((node, index) => (
+//         <div
+//           key={index}
+//           style={{
+//             position: "absolute",
+//             left: node.position.x,
+//             top: node.position.y,
+//             padding: "8px",
+//             background: "#cce5ff",
+//             borderRadius: "4px",
+//             boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+//           }}
+//         >
+//           {node.label}
+//         </div>
+//       ))} */}
+//       {canvasNodes.map((node, index) => (
+//         <div
+//           key={index}
+//           onMouseDown={(e) => handleMouseDown(e, index)}
+//           style={{
+//             position: "absolute",
+//             left: node.position.x,
+//             top: node.position.y,
+//             padding: "8px",
+//             background: "#cce5ff",
+//             borderRadius: "4px",
+//             boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+//             cursor: "move",
+//             userSelect: "none",
+//           }}
+//         >
+//           {node.label}
+//         </div>
+//       ))}
+
+//     </div>
+
+//   );
+// }
+<div
+  className="canvas"
+  onDragOver={(e) => e.preventDefault()}
+  onDrop={handleDrop}
+  style={{
+    position: "relative",
+    border: "2px dashed #ccc",
+    minHeight: "400px",
+    padding: "20px",
+    backgroundColor: "#f9f9f9",
+  }}
+>
+  {/* 🔗 SVG for connections */}
+  <svg
+    style={{
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      height: "100%",
+      pointerEvents: "none",
+    }}
+  >
+    {connections?.map((conn, i) => {
+      const from = canvasNodes[conn.from];
+      const to = canvasNodes[conn.to];
+      if (!from || !to) return null;
+
+      return (
+        <line
+          key={i}
+          x1={from.position.x + 50}
+          y1={from.position.y + 20}
+          x2={to.position.x + 50}
+          y2={to.position.y + 20}
+          stroke="#333"
+          strokeWidth="2"
+        />
+      );
+    })}
+  </svg>
+
+  {/* 🧱 Node rendering */}
+  {/* {canvasNodes.map((node, index) => (
     <div
-      className="canvas"
-      onDragOver={(e) => e.preventDefault()}
-      onDrop={handleDrop}
+      key={index}
+      onMouseDown={(e) => handleMouseDown(e, index)}
       style={{
-        position: "relative",
-        border: "2px dashed #ccc",
-        minHeight: "400px",
-        padding: "20px",
-        backgroundColor: "#f9f9f9",
+        position: "absolute",
+        left: node.position.x,
+        top: node.position.y,
+        padding: "8px",
+        background: "#cce5ff",
+        borderRadius: "4px",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+        cursor: "move",
+        userSelect: "none",
       }}
     >
-      {/* {canvasNodes.map((node, index) => (
-        <div
-          key={index}
-          style={{
-            position: "absolute",
-            left: node.position.x,
-            top: node.position.y,
-            padding: "8px",
-            background: "#cce5ff",
-            borderRadius: "4px",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-          }}
-        >
-          {node.label}
-        </div>
-      ))} */}
-      {canvasNodes.map((node, index) => (
-        <div
-          key={index}
-          onMouseDown={(e) => handleMouseDown(e, index)}
-          style={{
-            position: "absolute",
-            left: node.position.x,
-            top: node.position.y,
-            padding: "8px",
-            background: "#cce5ff",
-            borderRadius: "4px",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
-            cursor: "move",
-            userSelect: "none",
-          }}
-        >
-          {node.label}
-        </div>
-      ))}
-
+      {node.label}
     </div>
+  ))} */}
+  {canvasNodes.map((node, index) => (
+  <div
+    key={index}
+    onMouseDown={(e) => handleMouseDown(e, index)}
+    onClick={() => onNodeSelect(index)} // 👈 Add this line
+    style={{
+      position: "absolute",
+      left: node.position.x,
+      top: node.position.y,
+      padding: "8px",
+      background: "#cce5ff",
+      borderRadius: "4px",
+      boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+      cursor: "pointer",
+      userSelect: "none",
+    }}
+  >
+    {node.label}
+  </div>
+))}
 
-  );
-}
+</div>);}

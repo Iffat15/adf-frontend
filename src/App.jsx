@@ -10,7 +10,8 @@ function App() {
   const [nodes, setNodes] = useState([]);
   const [canvasNodes, setCanvasNodes] = useState([])
   const [results, setResults] = useState([]);
-
+  const [connections, setConnections] = useState([]);
+  const [selectedNodeIndex, setSelectedNodeIndex] = useState(null);
   //  Fetch uploaded scripts when page loads
   useEffect(() => {
     const fetchScripts = async () => {
@@ -46,6 +47,16 @@ function App() {
       { label, position }
     ]);
   };
+  
+
+  const handleNodeSelect = (index) => {
+    if (selectedNodeIndex === null) {
+      setSelectedNodeIndex(index);
+    } else {
+      setConnections((prev) => [...prev, { from: selectedNodeIndex, to: index }]);
+      setSelectedNodeIndex(null);
+    }
+  };
 
   return (
     <div className="app-container">
@@ -54,10 +65,17 @@ function App() {
       <div className='middle-section'>
         <MiddlePanel onNewNode={handleNewNode} />
         {/* <Canvas canvasNodes={canvasNodes} onDropNode={handleDropNode} /> */}
+        {/* <Canvas
+          canvasNodes={canvasNodes}
+          onDropNode={handleDropNode}
+          setCanvasNodes={setCanvasNodes}
+        /> */}
         <Canvas
           canvasNodes={canvasNodes}
           onDropNode={handleDropNode}
           setCanvasNodes={setCanvasNodes}
+          onNodeSelect={handleNodeSelect}
+          connections={connections}
         />
 
       </div>
