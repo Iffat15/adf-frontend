@@ -5,7 +5,8 @@
 }
 
 .left-panel {
-  flex: 1;
+  /* flex: 1; */
+  width: 300px;
   background-color: #f0f0f0;
   padding: 10px;
   box-sizing: border-box;
@@ -21,18 +22,39 @@
   box-sizing: border-box;
 } */
  .middle-section {
-  flex: 2;
+  /* flex: 2;
   display: flex;
   flex-direction: column;
   height: 100%;
   margin-right: 10px;
+  overflow: hidden; */
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  box-sizing: border-box;
 }
 
 
 .right-panel {
   flex: 1;
-  /* background-color: #e3f2fd; */
+  background-color: #e3f2fd;
   padding: 10px;
   box-sizing: border-box;
-  margin-left: 10px
+  margin-left: 10px;
+  height: 60px; /* 👈 small height for buttons */
+  background-color: #e3f2fd;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
 }
+
+.left-area {
+  width: 300px; /* or whatever minimal width you want */
+  display: flex;
+  flex-direction: column;
+}
+/* .left-area > * {
+  width: 100%;
+  box-sizing: border-box;
+} */

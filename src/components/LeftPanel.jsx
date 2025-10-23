@@ -53,30 +53,63 @@
 //     </div>
 //   );
 // }
+// export default function LeftPanel({ nodes, onNodeClick }) {
+//   const onDragStart = (event, node) => {
+//     event.dataTransfer.setData('nodeLabel', node);
+//     event.dataTransfer.effectAllowed = 'move';
+//   };
+
+//   return (
+//     <div className="left-panel">
+//       <h3>Node Library</h3>
+//       {nodes.map((node, index) => (
+//         <div
+//           key={node._id}
+//           draggable
+//           // onDragStart={(event) => onDragStart(event, label)}
+//           // onClick={() => onNodeClick(label)}
+//           onDragStart={(event) => event.dataTransfer.setData("nodeData", JSON.stringify(node))}
+//           onClick={() => onNodeClick(node)}
+
+//           style={{
+//             padding: '8px',
+//             margin: '4px',
+//             background: '#ddd',
+//             cursor: 'grab',
+//             borderRadius: '4px',
+//           }}
+//         >
+//           {node.name}
+//         </div>
+//       ))}
+//     </div>
+//   );
+// }
 export default function LeftPanel({ nodes, onNodeClick }) {
-  const onDragStart = (event, nodeLabel) => {
-    event.dataTransfer.setData('nodeLabel', nodeLabel);
-    event.dataTransfer.effectAllowed = 'move';
+  const onDragStart = (event, node) => {
+    event.dataTransfer.setData("nodeData", JSON.stringify(node));
+    event.dataTransfer.effectAllowed = "move";
   };
 
   return (
     <div className="left-panel">
       <h3>Node Library</h3>
-      {nodes.map((label, index) => (
+      {nodes.map((node, index) => (
         <div
-          key={label}
+          // key={node._id}
+          key={node._id || index}
           draggable
-          onDragStart={(event) => onDragStart(event, label)}
-          onClick={() => onNodeClick(label)}
+          onDragStart={(event) => onDragStart(event, node)}
+          onClick={() => onNodeClick(node)}
           style={{
-            padding: '8px',
-            margin: '4px',
-            background: '#ddd',
-            cursor: 'grab',
-            borderRadius: '4px',
+            padding: "8px",
+            margin: "4px",
+            background: "#ddd",
+            cursor: "grab",
+            borderRadius: "4px",
           }}
         >
-          {label}
+          {node.name}
         </div>
       ))}
     </div>

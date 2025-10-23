@@ -4,25 +4,6 @@ import { FaUpload } from 'react-icons/fa'; // Make sure react-icons is installed
 
 export default function MiddlePanel({ onNewNode }) {
   const [file, setFile] = useState(null);
-
-  // const handleUpload = async () => {
-  //   if (!file) return;
-
-  //   const formData = new FormData();
-  //   formData.append('script', file);
-
-  //   try {
-  //     const res = await fetch('http://localhost:8000/upload-script', {
-  //       method: 'POST',
-  //       body: formData,
-  //     });
-  //     const data = await res.json();
-  //     onNewNode(data.nodeLabel);
-  //     console.log('Backend response:', data);
-  //   } catch (err) {
-  //     console.error('Upload failed:', err);
-  //   }
-  // };
   const handleUpload = async () => {
     if (!file) return;
 
