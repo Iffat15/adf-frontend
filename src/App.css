@@ -1,5 +1,5 @@
 .app-container {
-  display: flex;
+  /* display: flex; */
   height: 100vh;
   width: 100vw;
 }
@@ -33,17 +33,18 @@
   flex-direction: column;
   padding: 10px;
   box-sizing: border-box;
+  /* background-color: rgb(160, 160, 160); */
 }
 
 
 .right-panel {
-  flex: 1;
-  background-color: #e3f2fd;
+  /* flex: 1; */
+  /* background-color: #e3f2fd; */
   padding: 10px;
   box-sizing: border-box;
   margin-left: 10px;
   height: 60px; /* 👈 small height for buttons */
-  background-color: #e3f2fd;
+  /* background-color: #e3f2fd; */
   padding: 10px;
   box-sizing: border-box;
   margin-bottom: 10px;

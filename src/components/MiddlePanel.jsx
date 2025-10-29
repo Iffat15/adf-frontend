@@ -54,18 +54,18 @@ export default function MiddlePanel({ onNewNode }) {
         }}
       >
         <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            background: '#fff',
-            padding: '12px 20px',
-            borderRadius: '8px',
-            boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-            cursor: 'pointer',
-          }}
+          // style={{
+          //   display: 'flex',
+          //   alignItems: 'center',
+          //   gap: '12px',
+          //   background: '#fff',
+          //   padding: '12px 20px',
+          //   borderRadius: '8px',
+          //   boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
+          //   cursor: 'pointer',
+          // }}
         >
-          <FaUpload size={20} color="#007bff" />
+          {/* <FaUpload size={20} color="#007bff" />
           <label style={{ fontWeight: 'bold', color: '#333', cursor: 'pointer' }}>
             Upload your script
             <input
@@ -86,7 +86,22 @@ export default function MiddlePanel({ onNewNode }) {
             }}
           >
             Upload
-          </button>
+          </button> */}
+          
+           <label
+  htmlFor="file_input"
+  className="block mb-2 text-sm font-medium text-gray-900"
+>
+  Upload file
+</label>
+
+<input
+  id="file_input"
+  type="file"
+  className="block w-full text-sm text-black bg-white border border-gray-300 rounded-lg cursor-pointer
+             file:bg-blue-600 file:text-white file:border-0 file:px-4 file:py-2  file:cursor-pointer file:hover:bg-blue-700"
+/>
+
         </div>
       </div>
     </div>

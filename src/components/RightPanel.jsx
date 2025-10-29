@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import PipelineModal from './PipelineModal';
 export default function RightPanel({
   queue,
   setResults,
@@ -11,9 +11,16 @@ export default function RightPanel({
   pipelineName,
   pipelineDescription,
   setPipelineName,
-  setPipelineDescription
+  setPipelineDescription,
+  connectionsLocked,
+  setConnectionsLocked,
+  nodeSelectionDone,
+  setNodeSelectionDone,
+  showModal,
+  setShowModal,
+  savedPipelineId
 }) {
-  const [savedPipelineId, setSavedPipelineId] = useState(null);
+  // const [savedPipelineId, setSavedPipelineId] = useState(null);
 
 
   const buttonStyle = {
@@ -28,130 +35,107 @@ export default function RightPanel({
     width: '200px',
     boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
   };
-
-  // const runPipeline = async () => {
-  //   try {
-  //     const res = await fetch("http://localhost:8000/run-pipeline", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ scripts: queue }),
-  //     });
-  //     const data = await res.json();
-  //     setResults(data.results);
-  //   } catch (err) {
-  //     console.error("Pipeline execution failed:", err);
-  //   }
-  // };
   const runPipeline = async (pipelineId) => {
-  try {
-    const response = await fetch(`http://localhost:8000/pipelines/run-pipeline/${pipelineId}`);
-    if (!response.ok) {
-      throw new Error(`Server error: ${response.status}`);
+    try {
+      const response = await fetch(`http://localhost:8000/pipelines/run-pipeline/${pipelineId}`);
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status}`);
+      }
+      const result = await response.json();
+      console.log("Pipeline run result:", result);
+      setResults(result.results); // Optional: show results in UI
+      return result;
+    } catch (error) {
+      console.error("Error running pipeline:", error);
+      return { error: error.message };
     }
-    const result = await response.json();
-    console.log("Pipeline run result:", result);
-    setResults(result.results); // Optional: show results in UI
-    return result;
-  } catch (error) {
-    console.error("Error running pipeline:", error);
-    return { error: error.message };
-  }
-};
+  };
 
 
   return (
-    <div
+    <div className='bg-black text-white p-6 shadow-lg border-l border-gray-800 space-y-4'
     >
-      {/* <h3 style={{ marginBottom: '12px' }}>Pipeline Controls</h3> */}
-       <div style={{ marginTop: '20px' }}>
-      <label>Pipeline Name:</label><br />
-      <input
-        type="text"
-        value={pipelineName}
-        onChange={(e) => setPipelineName(e.target.value)}
-        style={{ width: '200px', marginBottom: '10px' }}
-      /><br />
-      <label>Description:</label><br />
-      <textarea
-        value={pipelineDescription}
-        onChange={(e) => setPipelineDescription(e.target.value)}
-        style={{ width: '200px', height: '60px' }}
-      />
-    </div>
-      <button style={buttonStyle} onClick = {handleStartNewPipeline}> New Pipeline</button>
-      {/* <button style={buttonStyle} onClick={runPipeline}>Run Pipeline</button> */}
-      {/* <button style={buttonStyle} onClick = {handleSavePipeline}>Save Pipeline</button> */}
+      <div className="flex flex-row justify-center items-center gap-4">
+
+      {/* <button style={buttonStyle} onClick={handleStartNewPipeline}> New Pipeline</button>
+
       <button
-  style={buttonStyle}
-  onClick={async () => {
-    const id = await handleSavePipeline();
-    if (id) setSavedPipelineId(id);
-  }}
->
-  Save Pipeline
-</button>
-      {/* <button
-  style={buttonStyle}
-  onClick={async () => {
-    if (!savedPipelineId) return alert("Please save the pipeline first.");
-    const response = await fetch(`http://localhost:8000/run-pipeline/${savedPipelineId}`);
-    const result = await response.json();
-    console.log("Pipeline run result:", result);
-    setResults(result.results); // Optional
-  }}
->
-  Run Pipeline
-</button> */}
-<button
-  style={buttonStyle}
-  onClick={async () => {
-    if (!savedPipelineId) return alert("Please save the pipeline first.");
-    await runPipeline(savedPipelineId); // ✅ Use the defined function
-  }}
->
-  Run Pipeline
-</button>
+        onClick={() => setShowModal(true)}
+        className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+      >
+        Save Pipeline
+      </button>
 
-      <button style={buttonStyle}>Test Pipeline</button>
-      <button style={buttonStyle}>Run Analytics</button>
-      <button style={buttonStyle}>View Logs</button>
+      <button
+        onClick={() => setConnectionsLocked(true)}
+        disabled={connectionsLocked}
+        className={`px-4 py-2 rounded ${connectionsLocked ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white'
+          }`}
+      >
+        {connectionsLocked ? 'Connections Locked' : 'Save Connections'}
+      </button>
 
+      <button
+        onClick={() => setNodeSelectionDone(true)}
+        className="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
+      >
+        Nodes Selection Done
+      </button>
 
-      {/* <h4 style={{ marginTop: '20px' }}>Queued Nodes:</h4>
-      <ul style={{ paddingLeft: '16px' }}>
-        {queue.length === 0 ? (
-          <li style={{ color: '#777' }}>No nodes added yet</li>
-        ) : (
-          queue.map((node, index) => (
-            <li key={index} style={{ marginBottom: '4px' }}>
-              {node?.label || "Unnamed Node"}
-            </li>
-          ))
-        )}
-      </ul> */}
-      <h4 style={{ marginTop: '20px' }}>Canvas Nodes: {canvasNodes.length}</h4>
-      <ul style={{ paddingLeft: '16px' }}>
-        {canvasNodes.map((node,index) => (
-          <li key={node.id ||index}>{node.label} ({node.type})</li>
-        ))}
-      </ul>
-      <h4 style={{ marginTop: '20px' }}>Connections:</h4>
-      <ul style={{ paddingLeft: '16px' }}>
-        {connections.length === 0 ? (
-          <li style={{ color: '#777' }}>No connections yet</li>
-        ) : (
-          // connections.map((conn, index) => (
-          //   <li key={index}>
-          //     {conn.from} → {conn.to}
-          //   </li>
-          // ))
-          connections.map((conn, index) => (
-            <li key={`${conn.from}-${conn.to}`}>{conn.from} → {conn.to}</li>
-          ))
+      <button
+        style={buttonStyle}
+        onClick={async () => {
+          if (!savedPipelineId) return alert("Please save the pipeline first.");
+          await runPipeline(savedPipelineId); // ✅ Use the defined function
+        }}
+      >
+        Run Pipeline
+      </button>
 
-        )}
-      </ul>
+      <button style={buttonStyle}>Test Pipeline</button> */}
 
+      <button className=' px-4 py-2 bg-gray-900 text-green-400 border border-green-500 rounded-md hover:text-green-300 transition duration-200' onClick={handleStartNewPipeline}> New Pipeline</button>
+      <button onClick={() => setShowModal(true)} className="px-4 py-2 bg-gray-900 text-green-400 border border-green-500 rounded-md hover:text-green-300 transition duration-200" > Save Pipeline </button>
+      <button onClick={() => setConnectionsLocked(true)} disabled={connectionsLocked}
+        // className={`px-4 py-2 rounded ${connectionsLocked ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 text-white' }`} 
+        // className={` px-4 py-2 font-bold rounded transition duration-200 ${connectionsLocked
+        //     ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
+        //     : 'bg-green-600 hover:bg-green-500 text-white'
+        //   }`}
+        className={`px-4 py-2 font-bold rounded-md transition duration-200 ${
+        connectionsLocked
+          ? 'bg-gray-700 text-gray-400 border border-gray-500 cursor-not-allowed'
+          : 'bg-gray-900 text-green-400 border border-green-500 hover:text-green-300'
+      }`}
+      >
+        {connectionsLocked ? 'Connections Locked' : 'Save Connections'}
+      </button>
+      {/* <button onClick={() => setNodeSelectionDone(true)} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded transition duration-200" > 
+        Nodes Selection Done
+      </button>  */}
+      <button
+        onClick={() => setNodeSelectionDone(true)}
+        disabled={nodeSelectionDone}
+        // className={`px-4 py-2 font-bold rounded transition duration-200 ${nodeSelectionDone
+        //     ? 'bg-gray-500 text-gray-300 cursor-not-allowed'
+        //     : 'bg-indigo-600 hover:bg-indigo-500 text-white'
+        //   }`}
+        className={`px-4 py-2 font-bold rounded-md transition duration-200 ${
+        nodeSelectionDone
+          ? 'bg-gray-700 text-gray-400 border border-gray-500 cursor-not-allowed'
+          : 'bg-gray-900 text-green-400 border border-green-500 hover:text-green-300'
+      }`}
+      >
+        {nodeSelectionDone ? 'Selection Locked' : 'Nodes Selection Done'}
+      </button>
+
+      <button  className="px-4 py-2 bg-gray-900 text-green-400 border border-green-500 rounded-md hover:text-green-300 transition duration-200"
+        onClick={async () => {
+          if (!savedPipelineId) return alert("Please save the pipeline first."); await runPipeline(savedPipelineId); // ✅ Use the defined function 
+        }} > Run Pipeline </button> 
+        
+        <button className="px-4 py-2 bg-gray-900 text-green-400 border border-green-500 rounded-md hover:text-green-300 transition duration-200">Test Pipeline</button>
+    </div>
     </div>
   );
 }

@@ -1,117 +1,89 @@
-// import React from 'react';
 
-// export default function LeftPanel({ onSelect }) {
-//   const items = ['Node A', 'Node B', 'Node C'];
+// import React from "react";
+// import NodeCard from "./cards/NodeCard";
 
-//   return (
-//     <div style={{ width: '20%', padding: '10px', background: '#f0f0f0' }}>
-//       <h3>Left Panel</h3>
-//       {items.map((item, index) => (
-//         <div
-//           key={index}
-//           onClick={() => onSelect(item)}
-//           style={{
-//             padding: '8px',
-//             margin: '4px 0',
-//             background: '#ddd',
-//             cursor: 'pointer',
-//             borderRadius: '4px',
-//           }}
-//         >
-//           {item}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
-// export default function LeftPanel({nodes,onNodeClick}) {
-// //   const onDragStart = (event, nodeLabel) => {
-// //     event.dataTransfer.setData('application/reactflow', nodeLabel);
-// //     event.dataTransfer.effectAllowed = 'move';
-// //   };
-
-//   return (
-//     <div className="left-panel">
-//       <h3>Node Library</h3>
-//       {nodes.map((label,index) => (
-//         <div
-//           key={label}
-//         //   onDragStart={(event) => onDragStart(event, label)}
-//         //   draggable
-//           onClick={()=> onNodeClick(label)}
-//           style={{
-//             padding: '8px',
-//             margin: '4px',
-//             background: '#ddd',
-//             cursor: 'grab',
-//             borderRadius: '4px',
-//           }}
-//         >
-//           {label}
-//         </div>
-//       ))}
-//     </div>
-//   );
-// }
 // export default function LeftPanel({ nodes, onNodeClick }) {
 //   const onDragStart = (event, node) => {
-//     event.dataTransfer.setData('nodeLabel', node);
-//     event.dataTransfer.effectAllowed = 'move';
+//     event.dataTransfer.setData("nodeData", JSON.stringify(node));
+//     event.dataTransfer.effectAllowed = "move";
+//   };
+
+//   const getBorderColor = (type) => {
+//     switch (type) {
+//       case "extract":
+//         return "border-blue-300";
+//       case "transform":
+//         return "border-purple-300";
+//       case "load":
+//         return "border-green-300";
+//       default:
+//         return "border-gray-300";
+//     }
 //   };
 
 //   return (
-//     <div className="left-panel">
-//       <h3>Node Library</h3>
-//       {nodes.map((node, index) => (
-//         <div
-//           key={node._id}
-//           draggable
-//           // onDragStart={(event) => onDragStart(event, label)}
-//           // onClick={() => onNodeClick(label)}
-//           onDragStart={(event) => event.dataTransfer.setData("nodeData", JSON.stringify(node))}
-//           onClick={() => onNodeClick(node)}
-
-//           style={{
-//             padding: '8px',
-//             margin: '4px',
-//             background: '#ddd',
-//             cursor: 'grab',
-//             borderRadius: '4px',
-//           }}
-//         >
-//           {node.name}
-//         </div>
-//       ))}
+//     <div className="left-panel p-4">
+//       <h3 className="text-xl font-bold mb-4">Node Library</h3>
+//       <div className="overflow-y-auto max-h-[80vh] pr-2">
+//         {nodes.map((node, index) => (
+//           <div
+//             key={node._id || index}
+//             draggable
+//             onDragStart={(event) => onDragStart(event, node)}
+//             onClick={() => onNodeClick(node)}
+//             className={`mb-3 cursor-grab border-l-4 pl-2 ${getBorderColor(node.type)}`}
+//           >
+//             <NodeCard
+//               name={node.name}
+//               type={node.type}
+//               description={node.description}
+//             />
+//           </div>
+//         ))}
+//       </div>
 //     </div>
 //   );
 // }
+import React from "react";
+import NodeCard from "./cards/NodeCard";
+
 export default function LeftPanel({ nodes, onNodeClick }) {
   const onDragStart = (event, node) => {
     event.dataTransfer.setData("nodeData", JSON.stringify(node));
     event.dataTransfer.effectAllowed = "move";
   };
 
+  const getBorderColor = (type) => {
+    switch (type) {
+      case "extract":
+        return "border-blue-400";
+      case "transform":
+        return "border-purple-400";
+      case "load":
+        return "border-green-400";
+      default:
+        return "border-gray-500";
+    }
+  };
+
   return (
-    <div className="left-panel">
-      <h3>Node Library</h3>
-      {nodes.map((node, index) => (
-        <div
-          // key={node._id}
-          key={node._id || index}
-          draggable
-          onDragStart={(event) => onDragStart(event, node)}
-          onClick={() => onNodeClick(node)}
-          style={{
-            padding: "8px",
-            margin: "4px",
-            background: "#ddd",
-            cursor: "grab",
-            borderRadius: "4px",
-          }}
-        >
-          {node.name}
-        </div>
-      ))}
-    </div>
+    <aside className="bg-black text-white w-full sm:w-64 p-4 shadow-lg border-r border-gray-800 transition-all duration-300">
+      <h3 className="text-xl font-bold mb-4 text-green-400 drop-shadow-md text-center transition duration-300 hover:scale-105 hover:text-green-300">Node Library</h3>
+      <div className="overflow-y-auto max-h-[80vh] pr-2 scrollbar-thin scrollbar-thumb-green-400 scrollbar-track-gray-800">
+        {nodes.map((node, index) => (
+          <div
+            key={node._id || index}
+            draggable
+            onDragStart={(event) => onDragStart(event, node)}
+            onClick={() => onNodeClick(node)}
+            className={`mb-3 cursor-grab border-l-4 pl-2 hover:bg-gray-900 hover:scale-[1.02] transition-transform duration-200 ${getBorderColor(node.type)}`}
+          >
+            <NodeCard
+              node = {node}
+            />
+          </div>
+        ))}
+      </div>
+    </aside>
   );
 }
