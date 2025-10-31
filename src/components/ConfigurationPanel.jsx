@@ -49,18 +49,6 @@ export default function ConfigurationPanel({ selectedNode, params, setParams, is
             : 'border-transparent text-gray-500 hover:text-blue-500'
         }`;
 
-    // useEffect(() => {
-    //     if (!selectedNode) return;
-
-    //     const nodeType = selectedNode.type;
-    //     const savedParams = params[selectedNode.id] || {};
-    //     setFormData(savedParams);
-
-    //     if (nodeType === 'extract') setActiveTab('extract');
-    //     else if (nodeType === 'transform') setActiveTab('transform');
-    //     else if (nodeType === 'load') setActiveTab('load');
-    // }, [selectedNode, params]);
-
     const renderExtractForm = () => (
         <form className="space-y-4">
             <div>
@@ -105,6 +93,7 @@ export default function ConfigurationPanel({ selectedNode, params, setParams, is
                 >
                     <option value="">Select subtype</option>
                     <option value="merge">Merge</option>
+                    <option value="Filter">Filter</option>
                 </select>
             </div>
 
@@ -169,6 +158,45 @@ export default function ConfigurationPanel({ selectedNode, params, setParams, is
                 </>
             )}
 
+            {transformSubtype === 'Filter' && (
+                <>
+                    <label className="block text-sm font-medium text-gray-700">Filter Columns</label>
+                    {formData.filterCols?.map((col, index) => (
+                        <div key={index} className="flex gap-2 mt-2">
+                            <input
+                                type="text"
+                                value={col}
+                                onChange={(e) => {
+                                    const newCols = [...formData.filterCols];
+                                    newCols[index] = e.target.value;
+                                    setFormData({ ...formData, filterCols: newCols });
+                                }}
+
+                                className="mt-1 w-full rounded-md border-gray-300 shadow-sm"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const newCols = formData.filterCols.filter((_, i) => i !== index);
+                                    setFormData({ ...formData, filterCols: newCols });
+                                }}
+                                className="text-red-500"
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    ))}
+                    <button
+
+                        type="button"
+                        onClick={() => setFormData({ ...formData, filterCols: [...(formData.filterCols || []), ''] })}
+                        className="mt-2 text-blue-500"
+                    >
+                        + Add Column
+                    </button>
+                </>
+            )}
+
 
             <button
                 type="button"
@@ -221,7 +249,7 @@ export default function ConfigurationPanel({ selectedNode, params, setParams, is
     return (
         <div className={`absolute right-0 top-0 h-full bg-gray-100 border-l border-cyan-500 shadow-xl flex flex-col transition-all duration-300 ease-in-out ${isMinimized ? 'w-16' : 'w-full max-w-md'}`}>
             {/* Header with Tabs and Minimize Button */}
-            
+
             <div className="flex justify-between items-center px-4 py-2 border-b bg-gray-50">
                 {/* {!isMinimized && (
                     <div className="flex space-x-4">
